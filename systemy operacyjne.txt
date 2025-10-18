@@ -93,3 +93,33 @@ dodawanie : git remote add origin git@github.com:Majkel631/project.git
 
 
 
+poprawne : git init project
+
+cd project
+
+cat > .gitignore <<EOL
+*.log
+*.tar.gz
+*.tar.bz2
+downloaded_logs/
+*.tmp
+*.temp
+EOL
+
+git add .gitignore
+
+git commit -m "Initial commit: projekt analizy logów"
+
+git status
+
+git ls-files --others --ignored --exclude-standard
+
+git remote add origin https://github.com/Majkel631/projects.git
+
+git checkout -b development
+
+git push -u origin development
+
+
+
+
