@@ -1,2 +1,29 @@
 git status
 git status --ignored
+
+
+git init project
+
+cat > .gitignore <<EOL
+*.log
+*.tar.gz
+*.tar.bz2
+downloaded_logs/
+*.tmp
+*.temp
+EOL
+
+git add .gitignore
+git commit -m "Initial commit: projekt analizy logów"
+
+do testow : 
+touch test.log
+touch archive.tar.gz
+mkdir -p downloaded_logs
+touch downloaded_logs/tempfile.txt
+touch temp.tmp
+touch another.temp
+
+to plik który nie ma być ignorowany
+
+echo "Hello Git" > tracked_file.txt
