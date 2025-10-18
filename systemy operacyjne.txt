@@ -1,0 +1,95 @@
+Zadanie 1: 
+mkdir -p reports/{errors,statistics,hourly} && touch reports/errors/{summary.txt,details.txt,raw_data.txt} 
+&& touch reports/statistics/{summary.txt,details.txt,raw_data.txt}
+&& touch reports/hourly/{summary.txt,details.txt,raw_data.txt}
+
+ cp server_logs.txt reports/errors/errors_log.txt && cp server_logs.txt
+ reports/statistics/stats_log.txt && cp server_logs.txt reports/hourly/hourly_log.txt
+
+ find reports -type f -name "*.txt" -exec chmod 644 {} \;
+
+Zadanie 2 : 
+grep 'HTTP/1.[01]" [45][0-9][0-9]' server_logs.txt | awk '{print $1}' | sort -u > error_ips.txt && echo "Total: $(wc -l < error_ips.txt)" >> error_ips.txt
+
+Zadanie 3:
+ grep '"POST ' server_logs.txt | grep 'HTTP/1.[01]" 20[01]' | awk '{print $7}' | sort | uniq -c | sort -nr | awk '{print $2": "$1}' > successful_posts.txt
+
+Zadanie 4: 
+grep 'Firefox' server_logs.txt | awk -F'[][]' '{print $2}' > firefox_times.txt
+awk -F: '{print $2 ":" $3}' firefox_times.txt | sort -u > firefox_hours.txt
+
+Zadaie 5: 
+for os in Linux Windows MacOS; do
+  sum=$(grep -i "$os" server_logs.txt | awk '{total += $NF} END {print total}')
+  count=$(grep -i "$os" server_logs.txt | wc -l)
+  if [ "$count" -gt 0 ]; then
+    avg=$(echo "scale=3; $sum / $count" | bc)
+    echo "$os $avg"
+  fi
+done | sort > os_performance.txt
+
+Zadanie 6.
+top3_ips=$(awk '{print $1}' ../server_logs.txt | sort | uniq -c | sort -nr | head -3 | awk '{print $2}')
+> top3_summary.txt
+for ip in $top3_ips; do
+  filename="ip_${ip}.log"
+  grep "^$ip " ../server_logs.txt > "$filename"
+  lines=$(wc -l < "$filename")
+  echo "$filename: $lines lines" >> top3_summary.txt
+done
+Zadanie 7: 
+grep 'HTTP/1.[01]" 5[0-9][0-9]' ../server_logs.txt | awk 'BEGIN{OFS="|"} { $8=toupper($8); $9=toupper($9); print $1,$2,$3,$4,$5,$6,$7,$8,$9 }' > formatted_errors.txt && \
+echo "===" >> formatted_errors.txt && \
+count=$(grep 'HTTP/1.[01]" 5[0-9][0-9]' ../server_logs.txt | wc -l) && \
+echo "TOTAL: $count" >> formatted_errors.txt && \
+cat formatted_errors.txt
+Zadanie 8: 
+find reports/ -type f -name "*.txt" -mmin -60 -exec bash -c 'for f; do echo "$f: $(wc -l < "$f")"; done' bash {} + > reports/recent_files.txt
+
+Zadanie 9:
+tar -czf logs_backup.tar.gz reports/server_logs.txt
+tar -cf reports_backup.tar reports/
+
+echo "=== logs_backup.tar.gz ===" > archive_contents.txt
+tar -tzf logs_backup.tar.gz >> archive_contents.txt
+echo "" >> archive_contents.txt
+echo "=== reports_backup.tar ===" >> archive_contents.txt
+tar -tf reports_backup.tar >> archive_contents.txt
+cat archive_contents.txt
+Zadanie 10: 
+
+git init project
+
+cat > .gitignore <<EOL
+*.log
+*.tar.gz
+*.tar.bz2
+downloaded_logs/
+*.tmp
+*.temp
+EOL
+
+git add .gitignore
+git commit -m "Initial commit: projekt analizy logów"
+
+do testow : 
+touch test.log
+touch archive.tar.gz
+mkdir -p downloaded_logs
+touch downloaded_logs/tempfile.txt
+touch temp.tmp
+touch another.temp
+
+to plik który nie ma być ignorowany
+
+echo "Hello Git" > tracked_file.txt
+
+Token : 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
+
+git branch
+git remote -v
+git push -u origin develop
+dodawanie : git remote add origin git@github.com:Majkel631/project.git
+
+
+
