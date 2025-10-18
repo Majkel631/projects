@@ -46,6 +46,13 @@ cat formatted_errors.txt
 Zadanie 8: 
 find reports/ -type f -name "*.txt" -mmin -60 -exec bash -c 'for f; do echo "$f: $(wc -l < "$f")"; done' bash {} + > reports/recent_files.txt
 
+a na stronie : 
+find reports/ -type f -name "*.txt" -mmin -60 -exec bash -c '
+for filepath; do
+  echo "$filepath: $(wc -l < "$filepath")"
+done
+' bash {} + > recent_files.txt
+
 Zadanie 9:
 tar -czf logs_backup.tar.gz reports/server_logs.txt
 tar -cf reports_backup.tar reports/
@@ -56,6 +63,19 @@ echo "" >> archive_contents.txt
 echo "=== reports_backup.tar ===" >> archive_contents.txt
 tar -tf reports_backup.tar >> archive_contents.txt
 cat archive_contents.txt
+
+
+tar czf logs_backup.tar.gz server_logs.txt ip_*.log
+tar cf reports_backup.tar reports/
+(
+  echo "=== logs_backup.tar.gz ==="
+  tar tzf logs_backup.tar.gz | sort
+  echo ""
+  echo "=== reports_backup.tar ==="
+  tar tf reports_backup.tar | sort
+) > archive_contents.txt
+
+
 Zadanie 10: 
 
 git init project
@@ -119,6 +139,7 @@ git remote add origin https://github.com/Majkel631/projects.git
 git checkout -b development
 
 git push -u origin development
+
 
 
 
